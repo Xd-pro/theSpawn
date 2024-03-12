@@ -5,6 +5,8 @@ namespace supercrafter333\theSpawn\commands\alias;
 use pocketmine\command\CommandSender;
 use pocketmine\lang\Translatable;
 use pocketmine\player\Player;
+use pocketmine\utils\Config;
+use pocketmine\utils\TextFormat;
 use pocketmine\world\sound\PopSound;
 use pocketmine\world\World;
 use supercrafter333\theSpawn\commands\theSpawnOwnedCommand;
@@ -62,6 +64,13 @@ class AliasCommand extends theSpawnOwnedCommand
 
         if (!$pl->isPositionSafe($pl->getSpawn($world))) {
             $s->sendMessage($prefix . MsgMgr::getMsg("position-not-safe"));
+            return;
+        }
+
+        $cfg = new Config(theSpawn::getInstance()->getDataFolder() . "bans/" . strtolower($s->getName()) . ".yml", default: ["bans" => []]);
+    
+        if (\in_array($args[0], $cfg->get("bans"))) {
+            $s->sendMessage(theSpawn::$prefix . TextFormat::RED . "You are banned from this warp.");
             return;
         }
 

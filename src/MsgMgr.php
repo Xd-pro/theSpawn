@@ -114,12 +114,4 @@ class MsgMgr
     {
         return self::getMsg("something-went-wrong");
     }
-
-    /**
-     * @return string
-     */
-    public static function getPrefix(): string
-    {
-        return self::getMsg("prefix");
-    }
 }

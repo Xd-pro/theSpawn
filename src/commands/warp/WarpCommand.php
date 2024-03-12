@@ -5,6 +5,8 @@ namespace supercrafter333\theSpawn\commands\warp;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\Plugin;
+use pocketmine\utils\Config;
+use pocketmine\utils\TextFormat;
 use pocketmine\world\sound\XpCollectSound;
 use supercrafter333\theSpawn\commands\theSpawnOwnedCommand;
 use supercrafter333\theSpawn\events\teleport\WarpTeleportEvent;
@@ -43,6 +45,13 @@ class WarpCommand extends theSpawnOwnedCommand
     {
         $prefix = theSpawn::$prefix;
         $pl = theSpawn::getInstance();
+
+        $cfg = new Config(theSpawn::getInstance()->getDataFolder() . "bans/" . strtolower($s->getName()) . ".yml", default: ["bans" => []]);
+    
+        if (\in_array($args[0], $cfg->get("bans"))) {
+            $s->sendMessage(theSpawn::$prefix . TextFormat::RED . "You are banned from this warp.");
+            return;
+        }
 
         if (!$this->canUse($s)) return;
 

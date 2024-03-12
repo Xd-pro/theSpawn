@@ -9,6 +9,10 @@ website: "https://supercrafter333.github.io/theSpawn/"
 
 
 permissions:
+
+  theSpawn.warpban:
+    default: op
+
   theSpawn.bypass:
     default: op
   theSpawn.spawn.cmd:
@@ -69,3 +73,8 @@ permissions:
     default: op
   theSpawn.pwarps.1:
     default: true
+
+commands:
+  warpban:
+    permission: theSpawn.warpban
+    description: Ban a player from a warp

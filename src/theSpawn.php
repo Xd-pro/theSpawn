@@ -21,6 +21,7 @@ use pocketmine\player\IPlayer;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
+use pocketmine\utils\TextFormat;
 use pocketmine\world\Position;
 use pocketmine\world\World;
 use supercrafter333\theSpawn\commands\{BackCommand, PlayerWarpCommand};
@@ -29,7 +30,7 @@ use supercrafter333\theSpawn\commands\home\{DelhomeCommand, EdithomeCommand, Hom
 use supercrafter333\theSpawn\commands\hub\{DelhubCommand, HubCommand, SethubCommand};
 use supercrafter333\theSpawn\commands\spawn\{DelspawnCommand, SetspawnCommand, SpawnCommand};
 use supercrafter333\theSpawn\commands\tpa\{TpacceptCommand, TpaCommand, TpaHereCommand, TpdeclineCommand};
-use supercrafter333\theSpawn\commands\warp\{DelwarpCommand, EditwarpCommand, SetwarpCommand, WarpCommand};
+use supercrafter333\theSpawn\commands\warp\{DelwarpCommand, EditwarpCommand, SetwarpCommand, WarpBanCommand, WarpCommand};
 use supercrafter333\theSpawn\home\HomeManager;
 use supercrafter333\theSpawn\task\SpawnDelayTask;
 use supercrafter333\theSpawn\warp\WarpManager;
@@ -95,10 +96,12 @@ class theSpawn extends PluginBase
 
         $this->saveResource("config.yml");
         @mkdir($this->getDataFolder() . "homes");
+        @mkdir($this->getDataFolder() . "bans");
         @mkdir($this->getDataFolder() . "Languages");
         if (strtolower(MsgMgr::getMessagesLanguage()) == "custom")
             $this->saveResource("Languages/messages.yml");
 
+        $this->getCommand("warpban")->{"setExecutor"}(new WarpBanCommand);
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
         $cmdMap = $this->getServer()->getCommandMap();
         # Version Check
@@ -107,7 +110,7 @@ class theSpawn extends PluginBase
         ###
 
         $this->registerPermissions();
-        self::$prefix = MsgMgr::getPrefix();
+        self::$prefix = \str_replace("&", TextFormat::ESCAPE, (new Config($this->getDataFolder() . "prefix.yml", default: ["prefix" => "&7[&4&lRebellion&hMC&r&7] "]))->get("prefix"));
         $cfgMgr = ConfigManager::getInstance();
         if ($cfgMgr->useSpawns())
             $cmdMap->registerAll("theSpawn",
